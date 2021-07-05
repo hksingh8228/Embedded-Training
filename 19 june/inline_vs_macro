@@ -1,0 +1,79 @@
+macro funtion code example:
+
+
+#include<stdio.h>
+#define MAX_SIZE 10
+int main(void)
+{
+    int size = 0;
+    size = size + MAX_SIZE;
+    printf("\n The value of size is [%d]\n",size);
+    return 0;
+}
+The above macro (MAX_SIZE) has a value of 10.
+Now let’s compile it with the flag -save-temps so that pre-processing output (a file with an extension .i ) is produced along with the final executable using the below command.
+
+$ gcc -Wall -save-temps macro.c -o macro
+
+The command above will produce all the intermediate files in the GCC compilation process. One of these files will be macro.i. This is the file of our interest. 
+If you open this file and get to the bottom of this file :
+...
+...
+...
+int main(void)
+{
+    int size = 0;
+    size = size + 10;
+    printf("\n The value of size is [%d]\n",size);
+    return 0;
+}
+macro MAX_SIZE was replaced with its value (10) in preprocessing stage of the compilation process.
+
+Macros are handled by the pre-compiler and are thus guaranteed to be inlined. Macros are used for short operations and it avoids function call overhead. 
+It can be used if any short operation is being done in the program repeatedly. Function-like macros are very beneficial when the same block of code needs 
+to be executed multiple times.
+
+Inline functions are those functions whose definition is small and can be substituted at the place where its function call is made. Basically, 
+they are inlined with its function call. Even there is no guarantee that the function will actually be inlined. The compiler interprets the inline 
+keyword as a mere hint or requests to substitute the code of function into its function call. Usually, people say that having an inline function increases 
+performance by saving time of function call overhead (i.e. passing arguments variables, return address, return value, stack mantle and its dismantle, etc.)
+but whether an inline function serves your purpose in a positive or in a negative way depends purely on your code design and is largely debatable. 
+The compiler does inlining for performing optimizations. If compiler optimization has been disabled, then inline functions would not serve their purpose and their
+function call would not be replaced by their function definition. To have GCC inline your function regardless of optimization level, declare the function with the 
+“always_inline” attribute:     void func_test() __attribute__((always_inline));
+
+#include <stdio.h>
+void inline test_inline_func1(int a, int b) 
+{
+    printf ("a=%d and b=%d\n", a, b);
+}
+int inline test_inline_func2(int x) 
+{
+    return x*x;
+}
+int main() 
+{
+    int tmp;
+    test_inline_func1(2,4);
+    tmp = test_inline_func2(5);
+    printf("square val=%d\n", tmp);
+    return 0;
+}
+
+Output:
+
+$ ./inline
+a=2 and b=4
+square val=25
+
+Now, we will understand how inline functions are defined. It is very simple. Only, we need to specify “inline” keyword in its definition.
+Once you specify “inline” keyword in its definition, it requests the compiler to do optimizations for this function to save time by avoiding function call overhead. 
+Whenever calling to the inline function is made, the function call would be replaced by the definition of the inline function.
+
+Inline functions provide the following advantages over macros.
+
+Since they are functions so the type of arguments is checked by the compiler whether they are correct or not.
+There is no risk if called multiple times. But there is risk in macros which can be dangerous when the argument is an expression.
+They can include multiple lines of code without trailing backslashes.
+Inline functions have their own scope for variables and they can return a value.
+Debugging code is easy in the case of Inline functions as compared to macros.
