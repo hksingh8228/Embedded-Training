@@ -1,4 +1,4 @@
-Execute the line and find the output a = 2, b =1, x=(a++ && (!b) && b|| ++a);
+ Program to find the sum of digits of a number until the sum is reduce to 1 digit.
 #include<stdio.h>
 int main()
 {
